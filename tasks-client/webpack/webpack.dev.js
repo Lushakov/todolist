@@ -34,6 +34,12 @@ module.exports = merge(common, {
     overlay: {
       warnings: true,
       errors: true
-    }
+    },
+    proxy: [
+      {
+        context: ['/api'],
+        target: 'http://localhost:3002'
+      },
+    ]
   },
 });

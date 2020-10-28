@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-
 import Typography from '@material-ui/core/Typography';
-
 import DateFnsUtils from '@date-io/date-fns';
 import Grid from '@material-ui/core/Grid';
 import {
@@ -12,10 +9,10 @@ import {
     MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
 import { InputAdornment } from "@material-ui/core";
-
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
-
+//======== lib ========
+import * as filters from '../../lib/filters.js'
 
 const useStyles = makeStyles({
     root: {
@@ -29,15 +26,36 @@ const useStyles = makeStyles({
         paddingBottom: 15
     }
 });
+ 
 
-
-export default function ContainerTasks() {
+export default function ContainerTasks(props) {
     const classes = useStyles();
 
-    const [selectedDate, handleDateChange] = useState(null);
+    const [searchText, setSearchText] = useState('')
+    const [dateFrom, setDateFrom] = useState(null);
+    const [dateTo, setDateTo] = useState(null);
+    
+    //============================================================//
+    //================= This component's handlers ================//
+    //============================================================//
+
+    const onChangeSearchText = (e) => {
+        setSearchText(e.target.value)
+        props.setTasksData(filters.apply('search', props.tasksData, e.target.value))
+        filters.debag('onChangeSearchText');
+    }
+    const onChangeDateFrom = (e) => {
+        setDateFrom(e)
+        props.setTasksData(filters.apply('dateFrom', props.tasksData, e))
+        filters.debag('onChangeDateFrom');
+    }
+    const onChangeDateTo = (e) => {
+        setDateTo(e)
+        props.setTasksData(filters.apply('dateTo', props.tasksData, e))
+        filters.debag('onChangeDateTo');
+    }
 
     return (
-        //<div className="wrapper-filter">
         <Card className={classes.root}>
             <Typography variant="h6" className={classes.h6}>Фильтр</Typography>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -46,6 +64,8 @@ export default function ContainerTasks() {
                         id="input-with-icon-textfield"
                         label="Поиск"
                         variant="outlined"
+                        value={searchText}
+                        onChange={onChangeSearchText}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
@@ -57,21 +77,20 @@ export default function ContainerTasks() {
                     <KeyboardDateTimePicker
                         label="Дедлайн от"
                         inputVariant="outlined"
-                        value={selectedDate}
+                        value={dateFrom}
                         defaultValue=" "
-                        onChange={handleDateChange}
-                        format="yyyy/MM/dd HH:mm"
+                        onChange={onChangeDateFrom}
+                        format="yyyy.MM.dd HH:mm"
                     />
                     <KeyboardDateTimePicker
                         label="Дедлайн до"
                         inputVariant="outlined"
-                        value={selectedDate}
-                        onChange={handleDateChange}
-                        format="yyyy/MM/dd HH:mm"
+                        value={dateTo}
+                        onChange={onChangeDateTo}
+                        format="yyyy.MM.dd HH:mm"
                     />
                 </Grid>
             </MuiPickersUtilsProvider>
         </Card>
-        //</div>
     );
 }

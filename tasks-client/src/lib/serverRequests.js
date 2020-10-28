@@ -1,51 +1,64 @@
 export {
-    getList,
-    editTask,
-    addTask,
-    deleteTask
+   getList,
+   editTask,
+   addTask,
+   deleteTask
 }
 
-const baseURL = 'https://test.megapolis-it.ru';
+const baseURL = 'http://localhost:8082';
+const urlApiList = `${baseURL}/api/tasks`
+const contentTypeAppJSON = { 'Content-Type': 'application/json;charset=utf-8' };
 
-const getList = (func) => {
-    fetch(`${baseURL}/api/list`, { method: 'GET'})
-      .then(response => response.json())
-      .then(func)
+
+const getList = (callback) => {
+   fetch(urlApiList, 
+      {
+         method: 'GET'
+      })
+      .then(res => res.json())
+      .then(e => callback(e))
       .catch(e => console.log(e));
 }
 
-const editTask = (data, func) => {
-    
+const editTask = ({id, title, date}, callback) => {
+   const body = JSON.stringify({id, title, date});
+
+   fetch(urlApiList, 
+      {
+         method: 'PUT',
+         headers: contentTypeAppJSON, 
+         body 
+      })
+      .then(res => res.json())
+      .then(e => callback(e))
+      .catch(e => console.log(e));
 }
 
-const addTask = (data, func) => {
-    const url =  `${baseURL}/api/list`; 
-    const body = {title: data.title, date: data.date};
+const addTask = ({title, date}, callback) => {
+   const body = JSON.stringify({title, date});
 
-    fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8',
-        },
-        body: JSON.stringify(body)
-        })
-        .then(response => response.json()).then(result => {
-          func(result.id);
-        })
-        .catch(e => console.log(e));
+   fetch(urlApiList, 
+      { 
+         method: 'POST',
+         headers: contentTypeAppJSON, 
+         body 
+      })
+      .then(res => res.json())
+      .then(e => callback(e))
+      .catch(e => console.log(e))
 }
 
-const deleteTask = (id, func) => {
-    const url =  `${baseURL}/api/list/${id}`; 
+const deleteTask = (id, callback) => {
+   const url = urlApiList;
+   const body = JSON.stringify({id});
 
-    fetch(url, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8',
-        },
-        })
-        .then(response => response.json()).then(result => {
-            if(result.success) func();
-        })
-        .catch(e => console.log(e));
+   fetch(url,
+      {
+         method: 'DELETE',
+         headers: contentTypeAppJSON,
+         body
+      })
+      .then(res => res.json())
+      .then(e => callback(e))
+      .catch(e => console.log(e));
 }
