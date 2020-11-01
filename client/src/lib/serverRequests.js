@@ -5,7 +5,7 @@ export {
    deleteTask
 }
 
-const baseURL = 'https://devreed.ru/todolist;
+const baseURL = 'https://devreed.ru/todolist';
 const urlApiList = `${baseURL}/api/tasks`
 const contentTypeAppJSON = { 'Content-Type': 'application/json;charset=utf-8' };
 
