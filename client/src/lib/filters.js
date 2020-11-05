@@ -21,7 +21,7 @@ const apply = (filter, tasksData, fData) => {
     })
 }
 
-const onCRUD = (tasksData) => { //Only before every CRUD operation on taskData. For other cases, use "apply"
+const onCRUD = (tasksData) => { //Only after every CRUD operation on taskData. For other cases, use "apply"
     for(let name in boolResults) boolResults[name].splice(tasksData.length)
 
     return tasksData.map((row, index) => {
